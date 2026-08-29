@@ -1,0 +1,2 @@
+# 依赖请在 venv 中安装：pip install -r requirements.txt
+pytest>=8.0
