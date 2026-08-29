@@ -1,0 +1,41 @@
+# 虚拟环境（体积大、随解释器变化，绝不入库）
+.venv/
+venv/
+env/
+*.venv
+
+# Python 缓存
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# 密钥与本地配置（绝不入库）
+.env
+.env.*
+*.key
+*.pem
+secrets.json
+credentials.json
+
+# 日志
+*.log
+logs/
+
+# 编辑器 / 系统
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# 测试 / 覆盖率产物
+.pytest_cache/
+.coverage
+htmlcov/
+
+# 数据导出临时文件（真实收货单原始数据按脱敏规则另行管理）
+data/raw/
+*.tmp
