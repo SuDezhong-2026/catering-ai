@@ -1,2 +1,8 @@
 # 依赖请在 venv 中安装：pip install -r requirements.txt
 pytest>=8.0
+# 依赖请在 venv 中安装：pip install -r requirements.txt
+fastapi>=0.110
+uvicorn>=0.27
+pydantic>=2.7
+pydantic-settings>=2.0
+pytest>=8.0
