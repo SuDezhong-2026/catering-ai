@@ -3,6 +3,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+from config import settings
 
 # 创建服务实例，后面所有接口都挂它下面
 app = FastAPI()
@@ -53,7 +54,7 @@ def handle_unexpected_error(request, exc):
 # ⑥ 正常接口，统一用 ApiResponse 包裹
 @app.get("/hello")
 def hello():
-    return ApiResponse(code=0, msg="ok", data={"msg": "你好，正斗！"})
+    return ApiResponse(code=0, msg="ok", data={"app_name": settings.app_name, "debug": settings.debug})
 
 
 @app.post("/echo")
