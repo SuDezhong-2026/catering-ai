@@ -11,3 +11,10 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # 所有数据库表模型都继承这个 Base，SQLAlchemy 才知道它们是表
 Base = declarative_base()
+# 给接口用的数据库会话依赖：每次请求开一个会话，用完自动关
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

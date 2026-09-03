@@ -1,9 +1,12 @@
-# routers/items.py —— 接口路由（router 层）
-# 路由层只负责：收请求 → 调 service → 用 ApiResponse 包好返回。不写任何业务计算。
-from fastapi import APIRouter
-from models.receipt import ReceiptItem
+# routers/items.py —— 接口路由（router 层）：只收请求、调 service、包返回
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from models.receipt import ReceiptItem, ReceiptUpdate
 from models.response import ApiResponse
-from services.receipt_service import build_item_result
+from services.receipt_service import (
+    create_receipt, get_receipt, list_receipts, update_receipt, delete_receipt, receipt_to_dict,
+)
+from database import get_db
 from config import settings
 
 router = APIRouter()
@@ -19,12 +22,47 @@ def echo(item: dict):
     return ApiResponse(code=0, msg="ok", data={"you_sent": item})
 
 
+# ① 新增一条收货单
 @router.post("/items")
-def create_item(item: ReceiptItem):
-    result = build_item_result(item)   # 业务交给 service 层
-    return ApiResponse(code=0, msg="ok", data=result)
+def create_item(item: ReceiptItem, db: Session = Depends(get_db)):
+    db_item = create_receipt(db, item)
+    return ApiResponse(code=0, msg="ok", data=receipt_to_dict(db_item))
+
+
+# ② 查列表（所有收货单）
+@router.get("/items")
+def list_items(db: Session = Depends(get_db)):
+    rows = list_receipts(db)
+    return ApiResponse(code=0, msg="ok", data=[receipt_to_dict(r) for r in rows])
+
+
+# ③ 查一条（按 id）
+@router.get("/items/{item_id}")
+def get_item(item_id: int, db: Session = Depends(get_db)):
+    r = get_receipt(db, item_id)
+    if not r:
+        raise HTTPException(status_code=404, detail=f"id={item_id} 的收货单不存在")
+    return ApiResponse(code=0, msg="ok", data=receipt_to_dict(r))
+
+
+# ④ 改一条（按 id）
+@router.put("/items/{item_id}")
+def update_item(item_id: int, data: ReceiptUpdate, db: Session = Depends(get_db)):
+    r = update_receipt(db, item_id, data)
+    if not r:
+        raise HTTPException(status_code=404, detail=f"id={item_id} 的收货单不存在")
+    return ApiResponse(code=0, msg="ok", data=receipt_to_dict(r))
+
+
+# ⑤ 删一条（按 id）
+@router.delete("/items/{item_id}")
+def delete_item(item_id: int, db: Session = Depends(get_db)):
+    ok = delete_receipt(db, item_id)
+    if not ok:
+        raise HTTPException(status_code=404, detail=f"id={item_id} 的收货单不存在")
+    return ApiResponse(code=0, msg="ok", data={"deleted_id": item_id})
 
 
 @router.get("/boom")
 def boom():
-    return 1 / 0   # 故意制造异常，验证全局兜底网（测试用）
+    return 1 / 0   # 验证全局兜底网
