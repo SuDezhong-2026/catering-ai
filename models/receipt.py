@@ -8,6 +8,7 @@ class ReceiptItem(BaseModel):
     qty: float
     unit: str = "份"
     price: float
+    supplier: str = ""     # 供应商（可选，默认空）
 
 
 class ReceiptUpdate(BaseModel):
@@ -16,3 +17,4 @@ class ReceiptUpdate(BaseModel):
     qty: float | None = None
     unit: str | None = None
     price: float | None = None
+    supplier: str | None = None

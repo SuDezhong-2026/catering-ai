@@ -29,11 +29,18 @@ def create_item(item: ReceiptItem, db: Session = Depends(get_db)):
     return ApiResponse(code=0, msg="ok", data=receipt_to_dict(db_item))
 
 
-# ② 查列表（所有收货单）
+# ② 查列表（分页 + 供应商筛选 + 日期筛选 + 排序）
 @router.get("/items")
-def list_items(db: Session = Depends(get_db)):
-    rows = list_receipts(db)
-    return ApiResponse(code=0, msg="ok", data=[receipt_to_dict(r) for r in rows])
+def list_items(
+    page: int = 1, size: int = 10, supplier: str | None = None,
+    date: str | None = None, order_by: str = "created_at", desc: bool = False,
+    db: Session = Depends(get_db),
+):
+    rows, total = list_receipts(db, page, size, supplier, date, order_by, desc)
+    return ApiResponse(code=0, msg="ok", data={
+        "total": total, "page": page, "size": size,
+        "items": [receipt_to_dict(r) for r in rows],
+    })
 
 
 # ③ 查一条（按 id）
