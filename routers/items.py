@@ -8,8 +8,9 @@ from services.receipt_service import (
 )
 from database import get_db
 from config import settings
+from auth import verify_api_key
+router = APIRouter(dependencies=[Depends(verify_api_key)])
 
-router = APIRouter()
 
 
 @router.get("/hello")

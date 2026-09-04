@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     debug: bool = False                     # 调试开关
     secret_key: str = "dev-placeholder"     # 密钥（真实值放 .env，绝不写死这里）
     db_url: str = "sqlite:///./catering.db" # 数据库连接地址
-
+    api_key: str = "dev-placeholder"      # API 访问钥匙（真实值放 .env 的 API_KEY，绝不写死）
 
 # 直接实例化；之后全项目用 settings.xxx 读取，不写死
 settings = Settings()

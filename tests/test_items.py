@@ -8,11 +8,13 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from fastapi.testclient import TestClient
 from main import app
-
+from config import settings
 # TestClient 是 FastAPI 自带的“假浏览器”：不发真实网络请求，直接调你的 app。
 # raise_server_exceptions=False：让 TestClient 不把 500 异常再抛出来，
 # 这样我们才能“看到”全局兜底网返回的统一 500 结构（否则测试会直接报错退出）。
 client = TestClient(app, raise_server_exceptions=False)
+# Day14：所有接口现在都要钥匙，测试客户端也带上，否则 9 个测试全 401
+client.headers["X-API-Key"] = settings.api_key
 
 
 def test_hello_returns_ok():
