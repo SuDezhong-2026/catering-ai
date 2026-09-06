@@ -1,0 +1,16 @@
+.venv
+.env
+.git
+.gitignore
+*.bak
+__pycache__
+*.pyc
+.pytest_cache
+.coverage
+*.log
+src
+tests
+docs_DEVELOP.md
+sample_receipt.txt
+cleaned.csv
+day18.log
